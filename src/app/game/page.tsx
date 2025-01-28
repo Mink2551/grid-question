@@ -53,7 +53,7 @@ const GamePage: React.FC = () => {
             <div className="absolute top-1 left-1 bg-black text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
               ?
             </div>
-            {tile.revealed ? '' : index + 1}
+            {index + 1}
           </div>
         ))}
       </div>
