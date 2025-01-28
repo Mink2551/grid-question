@@ -40,7 +40,7 @@ const GamePage: React.FC = () => {
 
   return (
     <div className="p-6 min-h-screen overflow-hidden">
-      <div className="grid grid-cols-5 max-h-[90vh] max-w-[90vw] scale-150 absolute left-[50%] gap-2 -translate-x-[50%] top-[50%] -translate-y-[50%]">
+      <div className="grid grid-cols-5 xl:scale-150 lg:scale-125 md:scale-110 absolute left-[50%] gap-2 -translate-x-[50%] top-[50%] -translate-y-[50%]">
         {tileArray.map(([key, tile], index) => (
           <div
             key={key}
