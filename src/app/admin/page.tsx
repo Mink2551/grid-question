@@ -98,7 +98,13 @@ const AdminPage: React.FC = () => {
               </td>
               <td className="border border-gray-300 px-4 py-2 text-center">
                 <button onClick={() => openPopupManually(key)} className="bg-blue-500 px-2 py-1 text-white rounded-lg">
-                  Open Popup
+                  Popup
+                </button>
+                <button
+                  onClick={closePopup}
+                  className="bg-purple-500 text-white ml-2 px-2 py-1 rounded-lg hover:bg-purple-600 mt-4"
+                >
+                  Close
                 </button>
                 <button onClick={() => toggleReveal(key, tile.revealed)} className="bg-yellow-500 px-2 py-1 text-white rounded-lg mx-2">
                   {tile.revealed ? "Hide" : "Reveal"}
