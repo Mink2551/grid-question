@@ -102,7 +102,7 @@ const AdminPage: React.FC = () => {
                 </button>
                 <button
                   onClick={closePopup}
-                  className="bg-purple-500 text-white ml-2 px-2 py-1 rounded-lg hover:bg-purple-600 mt-4"
+                  className="bg-purple-500 text-white ml-2 px-2 py-1 rounded-lg hover:bg-purple-600"
                 >
                   Close
                 </button>
