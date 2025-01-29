@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
-import { ref, onValue, update } from "firebase/database";
+import { ref, onValue, update, remove } from "firebase/database";
 import { database } from "../../../lib/firebase";
 
 type Tile = {
@@ -9,34 +9,48 @@ type Tile = {
   revealed: boolean;
 };
 
+type ActivePopup = {
+  key: string;
+  question: string;
+} | null;
+
 const GamePage: React.FC = () => {
   const [tiles, setTiles] = useState<Record<string, Tile>>({});
-  const [selectedTile, setSelectedTile] = useState<{ key: string; question: string } | null>(null);
+  const [activePopup, setActivePopup] = useState<ActivePopup>(null);
 
   useEffect(() => {
     const tilesRef = ref(database, "tiles");
+    const popupRef = ref(database, "activePopup");
+
+    // Sync tiles data
     onValue(tilesRef, (snapshot) => {
       const data = snapshot.val();
       setTiles(data || {});
+    });
+
+    // Sync active popup data
+    onValue(popupRef, (snapshot) => {
+      setActivePopup(snapshot.val());
     });
   }, []);
 
   const handleTileClick = (tileKey: string, revealed: boolean) => {
     const tileRef = ref(database, `tiles/${tileKey}`);
-    // Toggle revealed state
     update(tileRef, { revealed: !revealed });
 
-    // If revealed, show the question in the popup
+    // If tile is not revealed, set popup
     if (!revealed) {
-      setSelectedTile({ key: tileKey, question: tiles[tileKey].question });
-    } else {
-      setSelectedTile(null); // Close the popup if the tile is closed
+      const popupRef = ref(database, "activePopup");
+      update(popupRef, { key: tileKey, question: tiles[tileKey].question });
     }
   };
 
-  const closePopup = () => setSelectedTile(null);
+  const closePopup = () => {
+    const popupRef = ref(database, "activePopup");
+    remove(popupRef); // ลบ popup ออกจาก database
+  };
 
-  const tileArray = Object.entries(tiles); // Convert object to array for easier mapping
+  const tileArray = Object.entries(tiles);
 
   return (
     <div className="p-6 min-h-screen overflow-hidden">
@@ -49,7 +63,6 @@ const GamePage: React.FC = () => {
               tile.revealed ? "bg-green-500 text-white" : "bg-red-500 text-white"
             }`}
           >
-            {/* Tile number */}
             <div className="absolute top-1 left-1 bg-black text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
               ?
             </div>
@@ -59,11 +72,11 @@ const GamePage: React.FC = () => {
       </div>
 
       {/* Popup */}
-      {selectedTile && (
+      {activePopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg h-[200px] text-axl w-[90vw] max-w-[900px]">
             <h2 className="text-xl font-bold mb-4">Question</h2>
-            <p className="mb-4">{selectedTile.question}</p>
+            <p className="mb-4">{activePopup.question}</p>
             <button
               onClick={closePopup}
               className="px-4 py-2 mt-7 bg-red-500 text-white rounded-lg hover:bg-red-600"
