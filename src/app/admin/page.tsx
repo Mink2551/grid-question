@@ -42,6 +42,7 @@ const AdminPage: React.FC = () => {
   };
 
   const toggleReveal = (tileKey: string, revealed: boolean) => {
+    update(ref(database, "activePopup"), { key: tileKey, question: tiles[tileKey].question });
     update(ref(database, `tiles/${tileKey}`), { revealed: !revealed });
   };
 
